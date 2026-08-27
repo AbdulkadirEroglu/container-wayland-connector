@@ -1,0 +1,10 @@
+# Packages installed inside the ros-jazzy container by setup.sh
+# One apt package per line. Comments start with #.
+
+curl
+wget
+gnupg
+lsb-release
+software-properties-common
+mesa-utils
+vulkan-tools
