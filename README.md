@@ -101,8 +101,8 @@ container-wayland-connector/
 | 0 — Basic container | ✅ done |
 | 1 — Wayland | ✅ done — `glxgears` renders on host Hyprland, correct theming/window rules |
 | 2 — GPU (NVIDIA) | ✅ done — hardware OpenGL + Vulkan confirmed, no driver ABI mismatch |
-| 3 — ROS | ⬜ next |
-| 4 — RViz | ⬜ |
+| 3 — ROS | ✅ done — ROS 2 Jazzy installed, `ros2 doctor` all checks pass, talker/listener DDS confirmed |
+| 4 — RViz | ✅ done — needs `QT_QPA_PLATFORM=xcb` (see [known issue](docs/wayland.md#known-issue-ogre-based-apps-rviz2-need-qt_qpa_platformxcb)) |
 | 5 — Gazebo | ⬜ |
 | 6 — Networking (DDS) | ⬜ |
 | 7 — Devices | ⬜ |
