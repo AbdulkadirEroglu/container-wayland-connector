@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Phase 3: install ROS 2 Jazzy inside the ros-jazzy container.
-# Run inside the container: distrobox enter ros-jazzy -- bash containers/ros-jazzy/install-ros.sh
+# Run inside the container: distrobox enter --root ros-jazzy -- bash containers/ros-jazzy/install-ros.sh
+# (drop --root if your host's Docker isn't rootful-only; see docs/troubleshooting.md)
 set -euo pipefail
 
 # --- locale -----------------------------------------------------------

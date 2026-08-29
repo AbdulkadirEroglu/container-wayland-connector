@@ -73,6 +73,10 @@ container-wayland-connector/
 │   └── ros-jazzy/              🐢 Ubuntu 24.04 + ROS 2 Jazzy environment
 │       ├── create.sh
 │       ├── setup.sh
+│       ├── install-ros.sh
+│       ├── install-gazebo.sh
+│       ├── install-device-tools.sh
+│       ├── setup-virtual-serial.sh
 │       └── packages.txt
 │
 ├── scripts/                    🧪 host checks & acceptance tests
@@ -80,12 +84,17 @@ container-wayland-connector/
 │   ├── check-gpu.sh
 │   ├── export-apps.sh
 │   ├── test-wayland.sh
+│   ├── test-gazebo.sh
 │   ├── test-audio.sh
 │   ├── test-network.sh
-│   └── test-devices.sh
+│   ├── test-devices.sh
+│   ├── setup-virtual-devices.sh
+│   ├── teardown-virtual-devices.sh
+│   ├── virtual-serial-pattern.py
+│   └── virtual-can-pattern.py
 │
 ├── host/                       🔧 host-side config (udev rules, etc.)
-└── docs/                       📚 architecture · nvidia · wayland · ros-networking · troubleshooting
+└── docs/                       📚 architecture · nvidia · wayland · ros-networking · devices · troubleshooting
 ```
 
 ---
@@ -93,7 +102,7 @@ container-wayland-connector/
 ## 🚦 Status
 
 ```text
-[■■■■■□□□□□] Phase 0-2 done — Wayland + NVIDIA GPU validated in-container
+[■■■■■■■■□□] Phase 0-7 done — Wayland + NVIDIA GPU + ROS + RViz + Gazebo + DDS networking + devices validated in-container
 ```
 
 | Phase | Status |
@@ -103,12 +112,12 @@ container-wayland-connector/
 | 2 — GPU (NVIDIA) | ✅ done — hardware OpenGL + Vulkan confirmed, no driver ABI mismatch |
 | 3 — ROS | ✅ done — ROS 2 Jazzy installed, `ros2 doctor` all checks pass, talker/listener DDS confirmed |
 | 4 — RViz | ✅ done — needs `QT_QPA_PLATFORM=xcb` (see [known issue](docs/wayland.md#known-issue-ogre-based-apps-rviz2-need-qt_qpa_platformxcb)) |
-| 5 — Gazebo | ⬜ |
-| 6 — Networking (DDS) | ⬜ |
-| 7 — Devices | ⬜ |
+| 5 — Gazebo | ✅ done — needs `QT_QPA_PLATFORM=xcb` + `GZ_IP=127.0.0.1` (see [known issues](docs/gazebo.md#known-issue--guiserver-cant-find-each-other-gazebo-transport-discovery)) |
+| 6 — Networking (DDS) | ✅ done — container↔container discovery works out of the box (no `GZ_IP`-style fix needed); container↔host is a non-issue (host networking); LAN robot case deferred pending hardware — see [docs/ros-networking.md](docs/ros-networking.md) |
+| 7 — Devices | ✅ done — serial/camera/CAN all confirmed via virtual devices (no real hardware needed/available); see [docs/devices.md](docs/devices.md) |
 | 8 — Desktop integration | ⬜ |
 
-See [`docs/wayland.md`](docs/wayland.md) and [`docs/nvidia.md`](docs/nvidia.md) for detailed results.
+See [`docs/wayland.md`](docs/wayland.md), [`docs/nvidia.md`](docs/nvidia.md), and [`docs/gazebo.md`](docs/gazebo.md) for detailed results.
 
 ---
 
@@ -123,7 +132,8 @@ See [`docs/wayland.md`](docs/wayland.md) and [`docs/nvidia.md`](docs/nvidia.md) 
 ./containers/ros-jazzy/create.sh
 
 # 3. Install base packages inside it
-distrobox enter ros-jazzy -- bash containers/ros-jazzy/setup.sh
+distrobox enter --root ros-jazzy -- bash containers/ros-jazzy/setup.sh
+# drop --root if your host's Docker isn't rootful-only (see docs/troubleshooting.md)
 ```
 
 ---

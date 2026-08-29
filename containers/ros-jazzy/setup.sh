@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run inside the ros-jazzy container (via `distrobox enter ros-jazzy`).
+# Run inside the ros-jazzy container (via `distrobox enter --root ros-jazzy`
+# on hosts with rootful-only Docker, e.g. Omarchy — see docs/troubleshooting.md).
 set -euo pipefail
 
 PACKAGES_FILE="$(dirname "$0")/packages.txt"
